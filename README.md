@@ -11,3 +11,7 @@ User Post Page: Users can view a feed displaying all the questions they have ans
 Discovery Page: Users can explore a feed showcasing questions and answers from other users they have chosen to follow, promoting discovery and engagement with diverse content.
 Posting Question Page: Users have the ability to create and post new questions to the platform's feed, initiating conversations and inviting responses from the community.
 Answering Question Feed: Users can browse and respond to questions posted by other users, enabling them to provide insights, advice, and opinions, fostering meaningful interactions and connections.
+
+## System Design
+Frontend Framework: React, Ionic (UI/UX)
+Backend Framework: NoSQL, Firebase
