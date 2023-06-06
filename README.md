@@ -27,7 +27,7 @@ When the user open the app it will go to discovery page by default or else if th
 User create the the post it will be stored in question collection with their userid (also documentId), questionId (uniquely putted), empty answers array, content, and timestamp.
 For each followers, it will update to Following questions field by appending given question by using reference
 
-### Scenario 4) User deleted the question post
+### Scenario 4) User deletes the question post
 User create the the post it will delete from question collection with their userid (also documentId)and questionId (uniquely putted). Traverse Answes and delete the reference but the answer still exists. However the users cannot view the question it will pop the question is no longer existed because user has deleted the question.
 For each followers, it will update to Following questions field by deleting their referece.
 
@@ -37,7 +37,7 @@ User create the the post it will be stored in questionForm collection with their
 It will update its question post by appending their questionForm in answer field.
 For each followers, it will update to Following questionForm field by appending given questionFirn post by using reference.
 
-### Scenario 6) User deleted the questionForm post
+### Scenario 6) User deletes the questionForm post
 User create the the post it will delete from question collection with their userid (also documentId)and questionId (uniquely putted).
 For original question, it will update answers field by deleting their reference.
 For each followers, it will update to Following questions field by deleting their referece.
