@@ -55,7 +55,8 @@ function Discover() {
   return (
     <>
       <UserPage/>
-      <DiscoveryPage/>
+      {/*<DiscoveryPage/>*/}
+      <QuestionPostPage/>
       <SignOut></SignOut>
       {/*put tab here*/}
     </>
@@ -85,48 +86,72 @@ function UserPage() {
   )
 }
 
+//infinite loop in useState
+//function DiscoveryPage() {
+//   const [postData, setPostData] = useState([]);
 
-function DiscoveryPage() {
-  const [postData, setPostData] = useState([]);
+//   const followingsRef = firestore.collection('followings');
+//   const query = followingsRef.doc('user1');
+//   const [followingData] = useCollectionData(query);
 
-  const followingsRef = firestore.collection('followings');
-  const query = followingsRef.doc('user1');
-  const [followingData] = useCollectionData(query);
+//   //Todo: pagination
+//   useEffect(() => {
+//     if (followingData) {
+//       const fetchPosts = async () => {
+//         const postRefs = followingData[0].posts; //followingData[0] is user's followings posts
 
-  //Todo: pagination
-  useEffect(() => {
-    if (followingData) {
-      const fetchPosts = async () => {
-        const postRefs = followingData[0].posts; //followingData[0] is user's followings posts
+//         const postsDataPromises = postRefs.map(async (postRef) => {
+//           const postDoc = await postRef.get();
 
-        const postsDataPromises = postRefs.map(async (postRef) => {
-          const postDoc = await postRef.get();
+//           if (postDoc.exists) {
+//             return postDoc.data();
+//           }
+//         });
 
-          if (postDoc.exists) {
-            return postDoc.data();
-          }
-        });
+//         const postsData = await Promise.all(postsDataPromises);
+//         setPostData(postsData);
+//       };
 
-        const postsData = await Promise.all(postsDataPromises);
-        setPostData(postsData);
-      };
+//       fetchPosts();
+//     }
+//   }, [followingData]);
 
-      fetchPosts();
-    }
-  }, [followingData]);
+//   return (
+//     <div>
+//       <h1>Following Posts</h1>
+//       {postData && postData.length > 0? postData.map((post, index) => (
+//         <div key={index}>
+//           <h3>{post.title}</h3>
+//           <p>{post.content}</p>
+//         </div>
+//       )): "no following posts"}
+//     </div>
+//   );
+// }
 
+function QuestionPostPage() {
+  const [formValue, setFormValue] = useState('');
+  const sendMessage = async(e) => {
+    e.preventDefault();
+    const {email} = auth.currentUser; //Todo: get the email from the user and put user by their id
+    //todo from collection find user by userId 
+    const questionRef = firestore.collection('questions').add(
+      {
+        postedUserID: email,
+        content: formValue,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      }
+    );
+    setFormValue('');
+  }
   return (
-    <div>
-      <h1>Following Posts</h1>
-      {postData && postData.length > 0? postData.map((post, index) => (
-        <div key={index}>
-          <h3>{post.title}</h3>
-          <p>{post.content}</p>
-        </div>
-      )): "no following posts"}
-    </div>
-  );
+    <>
+    <form onSubmit = {sendMessage}>
+    <input value= {formValue} onChange= {(e) => setFormValue(e.target.value)}/>
+    <button type= "submit"> Submit </button>
+    </form>
+    </>
+  )
 }
-
 //create discover page
 export default App;
