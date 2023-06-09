@@ -11,7 +11,9 @@ import { useCollectionData} from 'react-firebase-hooks/firestore';
 
 import { useEffect, useState } from 'react';
 
-//import {IonButton} from '@ionic/react';
+import {IonButton, IonHeader, IonToolbar, IonTabBar, IonTabButton, IonIcon, IonLabel, IonFooter, IonContent, IonApp} from '@ionic/react';
+
+import { search, personOutline } from 'ionicons/icons';
 
 firebase.initializeApp({
   //private data
@@ -45,21 +47,35 @@ function SignIn() {
   )
 }
 
-function SignOut() {
-  return auth.currentUser && (
-    <button onClick={() => auth.signOut()}>Sign Out</button>
-  )
-}
-
 function Discover() {
+  const [subPage, setSubPage] = useState(<UserPage/>);
+
   return (
-    <>
-      <UserPage/>
-      {/*<DiscoveryPage/>*/}
-      <QuestionPostPage/>
-      <SignOut></SignOut>
-      {/*put tab here*/}
-    </>
+    <IonApp>
+    <IonHeader>
+        <IonToolbar>
+          <IonButton slot= "start" onClick={() => auth.signOut()}>Sign Out</IonButton>
+          {/*logo*/}
+          <IonButton slot= "end" onClick = {() => setSubPage(<QuestionPostPage/>)}>Post Question</IonButton>
+        </IonToolbar>
+      </IonHeader>
+      <IonContent fullscreen={true} className="ion-padding">
+        {subPage}
+      </IonContent>
+      <IonFooter>
+      <IonTabBar slot="bottom">
+          <IonTabButton>
+            <IonIcon icon={search} />
+            <IonLabel>Discover</IonLabel>
+          </IonTabButton>
+          <IonTabButton onClick={() => setSubPage(<UserPage/>)}> 
+            {/*loading problem maybe do router if it is better*/}
+            <IonIcon icon={personOutline} />
+            <IonLabel>User</IonLabel>
+          </IonTabButton>
+        </IonTabBar>
+      </IonFooter>
+    </IonApp>
   )
 }
 
