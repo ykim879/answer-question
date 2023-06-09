@@ -9,14 +9,14 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { useCollectionData} from 'react-firebase-hooks/firestore';
 
 
-import { useEffect, useState } from 'react';
+import {useState } from 'react';
 
-import {IonButton, IonHeader, IonToolbar, IonTabBar, IonTabButton, IonIcon, IonLabel, IonFooter, IonContent, IonApp} from '@ionic/react';
+import {IonButton, IonHeader, IonToolbar, IonTabBar, IonTabButton, IonIcon, IonLabel, IonFooter, IonContent, IonApp, IonTextarea} from '@ionic/react';
 
 import { search, personOutline } from 'ionicons/icons';
 
 firebase.initializeApp({
-  //private data
+  // private data
 });
 
 const auth = firebase.auth();
@@ -56,7 +56,7 @@ function Discover() {
         <IonToolbar>
           <IonButton slot= "start" onClick={() => auth.signOut()}>Sign Out</IonButton>
           {/*logo*/}
-          <IonButton slot= "end" onClick = {() => setSubPage(<QuestionPostPage/>)}>Post Question</IonButton>
+          <IonButton slot= "end" onClick = {() => setSubPage(<QuestionPostPage/>)}>Post Question</IonButton> 
         </IonToolbar>
       </IonHeader>
       <IonContent fullscreen={true} className="ion-padding">
@@ -149,9 +149,8 @@ function QuestionPostPage() {
   const [formValue, setFormValue] = useState('');
   const sendMessage = async(e) => {
     e.preventDefault();
-    const {email} = auth.currentUser; //Todo: get the email from the user and put user by their id
-    //todo from collection find user by userId 
-    const questionRef = firestore.collection('questions').add(
+    const {email} = auth.currentUser;
+    firestore.collection('questions').add(
       {
         postedUserID: email,
         content: formValue,
@@ -163,8 +162,8 @@ function QuestionPostPage() {
   return (
     <>
     <form onSubmit = {sendMessage}>
-    <input value= {formValue} onChange= {(e) => setFormValue(e.target.value)}/>
-    <button type= "submit"> Submit </button>
+    <IonTextarea label="Place your question"  placeholder="Enter your question" value= {formValue} onChange= {(e) => setFormValue(e.target.value)}  labelPlacement="floating" counter={true} maxlength={50}></IonTextarea>
+    <IonButton slot= "bottom" type= "submit"> Submit </IonButton>
     </form>
     </>
   )
