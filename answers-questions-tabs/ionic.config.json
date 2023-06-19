@@ -1,0 +1,7 @@
+{
+  "name": "answers-questions-tabs",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite"
+}
