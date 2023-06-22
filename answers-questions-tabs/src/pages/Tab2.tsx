@@ -3,6 +3,7 @@ import './Tab2.css';
 
 import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
+import { useEffect, useState } from 'react';
 
 firebase.initializeApp({
   //private
@@ -15,13 +16,38 @@ interface ContainerProps {
 }
 
 const UserPage: React.FC<ContainerProps> = ({ email }) => {
-
+  
   return (
     <IonContent>
-      <div className="profile">
-      <IonCard>
+      <UserProfile email={email}/>
+      <div className="container">
+
+      </div>
+    </IonContent>
+  );
+};
+const UserProfile: React.FC<ContainerProps> = ({ email }) => {
+  const [userProfile, setUserProfile] = useState({});
+  useEffect(() => {
+    firestore
+      .collection("users")
+      .doc(email)
+      .get()
+      .then((snap) => {
+        return {...snap.data()};
+      })
+      .then((user) => {
+        console.log(user);
+        if(user) {
+          setUserProfile(user);
+        }
+      })
+    }, []);
+return (
+  <div className="profile">
+        <IonCard>
           <IonCardHeader>
-            <IonCardTitle>Name</IonCardTitle>
+            <IonCardTitle>{userProfile && userProfile.userName? userProfile.userName : "Loading"}</IonCardTitle>
             <IonCardSubtitle>{email}</IonCardSubtitle>
           </IonCardHeader>
 
@@ -29,22 +55,17 @@ const UserPage: React.FC<ContainerProps> = ({ email }) => {
             <IonList>
               <IonItem>
                 <IonLabel>Followers</IonLabel>
-                <IonBadge color="primary">22k</IonBadge>
+                <IonBadge color="primary">{userProfile? userProfile.followersCount : "Loading"}</IonBadge>
               </IonItem>
               <IonItem>
                 <IonLabel>Followings</IonLabel>
-                <IonBadge color="secondary">22k</IonBadge>
+                <IonBadge color="secondary">{userProfile? userProfile.followingsCount : "Loading"}</IonBadge>
               </IonItem>
             </IonList>
           </IonCardContent>
 
         </IonCard>
-        </div>
-      <div className="container">
-        
-      </div>
-    </IonContent>
-  );
-};
-
+    </div>
+);
+}
 export default UserPage;
