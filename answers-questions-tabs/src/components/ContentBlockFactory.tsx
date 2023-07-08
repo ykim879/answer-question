@@ -1,9 +1,12 @@
 //in the contentBlock parameter has reference and by firestore use reference to get data. if the type is question only post question if it is answer with user's answer and question
-import { IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle } from "@ionic/react";
+import { IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonContent } from "@ionic/react";
 
 import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 import "firebase/compat/auth";
+import { useEffect, useState } from "react";
+import { Content } from "../TableTypes";
+import './ExploreContainer.css';
 
 firebase.initializeApp({
     //private
@@ -18,21 +21,33 @@ interface ContentBlockPageProps {
 
 const ContentBlockPage: React.FC<ContentBlockPageProps> = ({lastVisible, email}) => {
 
+    const [contents, setContents] = useState<Content[]>();
+    useEffect(() => {
+
     let questionQuery = firestore
-      .collection("questions")
+      .collection("contents")
       .where("postedUserID", "==", email)
       .orderBy("timestamp", "desc");
     if (lastVisible) {
       questionQuery = questionQuery.startAfter(lastVisible);
     } //Todo: static variable: lastVisible
-    questionQuery = questionQuery.limit(5);
-
-    const [snapshot, loading, error] = useCollectionOnce(questionQuery,  { idField: 'id' })
-
+    questionQuery.limit(5).get()
+    .then((snap) => {
+        let newItems: any[] = [];
+        snap.docs.forEach((doc) => newItems.push({id: doc.id, ...doc.data()}));
+        return newItems
+      })
+    .then((contents) => {
+        console.log(contents)
+        setContents(contents)
+    }
+    );
+    }, [])
+//             {snapshot && snapshot.map(content => <ContentBlockFactory content = {content} />)}
+ console.log(contents)
     return (
-        <div>
-             {snapshot && snapshot.map(content => <ContentBlockFactory content = {content} />)}
-
+        <div className="contents">
+            {contents? contents.map(content => <ContentBlockFactory content= {content}/>) : <p>Loading</p>}
         </div>
     )
 
@@ -40,13 +55,14 @@ const ContentBlockPage: React.FC<ContentBlockPageProps> = ({lastVisible, email})
 
 //go to page: load all answers of the question -->> need pagination (we need one more content for question-answer relation so that we can get reference and move smoothly to the page)
 interface ContentFactoryProps {
-    cotent: Array<string>;
+    content: Content;
 }
-const ContentBlockFactory: React.FC<ContentFactoryProps> = ({ cotent }) => {
+const ContentBlockFactory: React.FC<ContentFactoryProps> = ({ content }) => {
     // from firestore get data
     return (
         <IonCard>
-
+            <QuestionBlock email={content.postedUserId} type= {content.type} questionTitle={content.questionContent} question={content.questionContent}/>
+            { content.type == "answer" ? <AnswerBlock answer= {content.answer}/> : <IonContent/> }
         </IonCard>
 
     );
@@ -82,3 +98,5 @@ const AnswerBlock: React.FC<AnswerProps> = ({answer}) => {
 function useCollectionOnce(query: any, options: any): [any, any, any] {
     throw new Error("Function not implemented.");
 }
+
+export default ContentBlockPage;
