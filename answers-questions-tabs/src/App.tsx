@@ -10,6 +10,7 @@ import {
   IonModal,
   IonPage,
   IonRouterOutlet,
+  IonSearchbar,
   IonTabBar,
   IonTabButton,
   IonTabs,
@@ -46,7 +47,7 @@ import './theme/variables.css';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { OverlayEventDetail } from '@ionic/react/dist/types/components/react-component-lib/interfaces';
 import QuestionPostPage from './components/QuestionPostPage';
 
@@ -81,6 +82,7 @@ function SignIn() {
 }
 
 function MainPage() {
+  const [selectedTab, setSelectedTab] = useState("tab1");
   const modal = useRef<HTMLIonModalElement>(null);
   const { email } = auth.currentUser;
 
@@ -89,15 +91,27 @@ function MainPage() {
     }
   }
   
+  const handleInput = (ev: Event) => {
+    let query = '';
+    const target = ev.target as HTMLIonSearchbarElement;
+    if (target) query = target.value!.toLowerCase();
+    console.log("User queried user:" , query);
+    if (query == '') {
+      //redirect to selected tab
+    } else {
+      //redirect to UserSearchPage.
+    }
+  };
+
   return (
     <IonApp>
       <IonReactRouter>
         <IonPage>
           <IonHeader>
             <IonToolbar>
-              <IonButton fill="outline" slot="start" onClick={() => auth.signOut()}>Sign Out</IonButton>
-              {/*logo*/}
-              <IonButton fill="outline" slot="end"  id="open-modal" expand="block">Post Question</IonButton>
+              <IonButton size="small" fill="outline" slot="start" onClick={() => auth.signOut()}>Sign Out</IonButton>
+               <IonSearchbar debounce={1000} onIonInput={(ev: Event) => {handleInput(ev)}}></IonSearchbar>
+              <IonButton size="small" fill="outline" slot="end"  id="open-modal" expand="block">Post</IonButton>
             </IonToolbar>
           </IonHeader>
 
@@ -115,7 +129,7 @@ function MainPage() {
           </IonContent>
         </IonModal>
 
-          <IonTabs>
+          <IonTabs onIonTabsWillChange={e => setSelectedTab(e.detail.tab)}>
             <IonRouterOutlet>
               <Route exact path="/tab1">
                 <Tab1 />
