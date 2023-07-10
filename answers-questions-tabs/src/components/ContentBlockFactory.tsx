@@ -1,5 +1,5 @@
 //in the contentBlock parameter has reference and by firestore use reference to get data. if the type is question only post question if it is answer with user's answer and question
-import { IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonContent } from "@ionic/react";
+import { IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonContent, IonLoading, IonSpinner } from "@ionic/react";
 
 import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
@@ -43,16 +43,34 @@ const ContentBlockPage: React.FC<ContentBlockPageProps> = ({lastVisible, email})
     }
     );
     }, [])
-//             {snapshot && snapshot.map(content => <ContentBlockFactory content = {content} />)}
- console.log(contents)
+
     return (
         <div className="contents">
-            {contents? contents.map(content => <ContentBlockFactory content= {content}/>) : <p>Loading</p>}
+            {contents? contents.map(content => <ContentBlockFactory content= {content}/>) : <LoadingContentBlocks/>}
         </div>
     )
 
 }
-
+function LoadingContentBlocks() {
+    return (
+        <>
+        <LoadingContentBlock/>
+        <LoadingContentBlock/>
+        <LoadingContentBlock/>
+        <LoadingContentBlock/>
+        <LoadingContentBlock/>
+        </>
+    )
+}
+function LoadingContentBlock() {
+    return (
+        <IonCard>
+            <IonCardHeader className="center">
+            <IonSpinner name="dots"></IonSpinner>
+          </IonCardHeader>
+        </IonCard>
+    )
+}
 //go to page: load all answers of the question -->> need pagination (we need one more content for question-answer relation so that we can get reference and move smoothly to the page)
 interface ContentFactoryProps {
     content: Content;
@@ -61,7 +79,7 @@ const ContentBlockFactory: React.FC<ContentFactoryProps> = ({ content }) => {
     // from firestore get data
     return (
         <IonCard>
-            <QuestionBlock email={content.postedUserId} type= {content.type} questionTitle={content.questionContent} question={content.questionContent}/>
+            <QuestionBlock email={content.postedUserID} type= {content.type} questionTitle={content.questionContent} question={content.questionContent}/>
             { content.type == "answer" ? <AnswerBlock answer= {content.answer}/> : <IonContent/> }
         </IonCard>
 
@@ -76,9 +94,8 @@ interface QuestionBlockProps {
 const QuestionBlock: React.FC<QuestionBlockProps> = ({email, type, questionTitle, question}) => {
     return (
         <IonCardHeader>
-            <IonCardTitle>{questionTitle}</IonCardTitle>
+            <IonCardTitle>{question}</IonCardTitle>
             <IonCardSubtitle>{email} posted {type} ...</IonCardSubtitle>
-            <p>{question}</p>
           </IonCardHeader>
     )
 }

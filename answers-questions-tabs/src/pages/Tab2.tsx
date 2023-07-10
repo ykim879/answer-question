@@ -4,6 +4,8 @@ import './Tab2.css';
 import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 import { useEffect, useState } from 'react';
+import { Users } from '../TableTypes';
+import ContentBlockPage from '../components/ContentBlockFactory';
 
 firebase.initializeApp({
   //private
@@ -16,18 +18,18 @@ interface ContainerProps {
 }
 
 const UserPage: React.FC<ContainerProps> = ({ email }) => {
+  let lastVisible = null;
   
   return (
     <IonContent>
       <UserProfile email={email}/>
-      <div className="container">
-
-      </div>
+      <ContentBlockPage lastVisible={lastVisible} email= {email}/>
     </IonContent>
   );
 };
 const UserProfile: React.FC<ContainerProps> = ({ email }) => {
-  const [userProfile, setUserProfile] = useState({});
+  const [userProfile, setUserProfile] = useState<Users>();
+  
   useEffect(() => {
     firestore
       .collection("users")

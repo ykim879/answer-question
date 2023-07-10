@@ -8,7 +8,7 @@ export interface Users{
 
 export interface Content{
     id: string;
-    postedUserId: string;
+    postedUserID: string;
     questionContent: string;
     questionTitle: string;
     timestamp: Date;

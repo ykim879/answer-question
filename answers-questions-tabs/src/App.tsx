@@ -6,8 +6,6 @@ import {
   IonContent,
   IonHeader,
   IonIcon,
-  IonInput,
-  IonItem,
   IonLabel,
   IonModal,
   IonPage,
@@ -23,7 +21,6 @@ import { IonReactRouter } from '@ionic/react-router';
 import { search, personOutline } from 'ionicons/icons';
 import Tab1 from './pages/Tab1';
 import UserPage from './pages/Tab2';
-import Tab3 from './pages/Tab3';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -51,6 +48,7 @@ import 'firebase/compat/auth';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useRef } from 'react';
 import { OverlayEventDetail } from '@ionic/react/dist/types/components/react-component-lib/interfaces';
+import QuestionPostPage from './components/QuestionPostPage';
 
 setupIonicReact();
 
@@ -90,18 +88,16 @@ function MainPage() {
     if (ev.detail.role === 'confirm') {
     }
   }
-  function confirm() {
-    modal.current?.dismiss('confirm');
-  }
+  
   return (
     <IonApp>
       <IonReactRouter>
         <IonPage>
           <IonHeader>
             <IonToolbar>
-              <IonButton slot="start" onClick={() => auth.signOut()}>Sign Out</IonButton>
+              <IonButton fill="outline" slot="start" onClick={() => auth.signOut()}>Sign Out</IonButton>
               {/*logo*/}
-              <IonButton slot="end"  id="open-modal" expand="block">Post Question</IonButton>
+              <IonButton fill="outline" slot="end"  id="open-modal" expand="block">Post Question</IonButton>
             </IonToolbar>
           </IonHeader>
 
@@ -111,19 +107,11 @@ function MainPage() {
               <IonButtons slot="start">
                 <IonButton onClick={() => modal.current?.dismiss()}>Cancel</IonButton>
               </IonButtons>
-              <IonTitle>Welcome</IonTitle>
-              <IonButtons slot="end">
-                <IonButton strong={true} onClick={() => confirm()}>
-                  Confirm
-                </IonButton>
-              </IonButtons>
+              <IonTitle>Post Question</IonTitle>
             </IonToolbar>
           </IonHeader>
           <IonContent className="ion-padding">
-            <IonItem>
-              <IonLabel position="stacked">Enter your name</IonLabel>
-              <IonInput type="text" placeholder="Your name" />
-            </IonItem>
+            <QuestionPostPage email = {email} modal = {modal}/>
           </IonContent>
         </IonModal>
 
