@@ -1,50 +1,60 @@
-import { IonContent } from "@ionic/react";
+import { IonContent, IonItem, IonList, IonSearchbar } from "@ionic/react";
 import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 import { useState } from "react";
+import UserPage from "./Tab2";
+import "./Tab3.css";
 
 
 firebase.initializeApp({
-    //private
-  });
-  
-  const firestore = firebase.firestore();
+  //private
+});
 
-  interface ContainerProps {
-    email: string;
-  }
+const firestore = firebase.firestore();
 
-const UserSearchPage: React.FC<ContainerProps> = ({ email }) => {
 
-    const [searchUser, setSearchUser] = useState("");
-    
-    firestore
+const UserSearchPage = () => {
+  const [result, setResult] = useState<string[]>([]);
+  const handleInput = (ev: Event) => {
+    let query = '';
+    const target = ev.target as HTMLIonSearchbarElement;
+    if (target) query = target.value!.toLowerCase();
+    if (query) {
+      firestore
         .collection("users")
-        .doc(email)
+        .where(firebase.firestore.FieldPath.documentId(), ">=", query)
+        .limit(10)
         .get()
         .then((snap) => {
-          return {...snap.data()};
+          let newItems: any[] = [];
+          snap.docs.forEach((doc) => newItems.push(doc.id));
+          return newItems
         })
-        .then((user) => {
-          if(user) {
-            setSearchUser(email);
-          } else {
-            setSearchUser("");
-          }
-        })
-    return (
-        <>
-        {searchUser ? <UserPage email= {searchUser}/> : <UserNotAvailablePage/>}
-        </>
-    )
+        .then((users) => { setResult(users) });
+    } else {
+      setResult([]);
+    };
+  }
+
+  return (
+    <IonContent>
+      <IonSearchbar className="search" animated={true} debounce={500} onIonInput={(ev: Event) => { handleInput(ev) }}></IonSearchbar>
+      <IonList className="searchList">
+        {result.map(content => {
+          let href = "/tab2";
+          return <IonItem href={href} button>{content}</IonItem>
+        })}
+      </IonList>
+    </IonContent>
+  )
 }
 
 const UserNotAvailablePage = () => {
-    return (
-        <IonContent>
-            User is Not Available
-        </IonContent>
-    )
+  return (
+    <IonContent>
+      User is Not Available
+    </IonContent>
+  )
 }
 
-export default UserSearchPage;
+export default UserSearchPage

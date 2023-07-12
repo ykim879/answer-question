@@ -1,4 +1,4 @@
-import { Redirect, Route } from 'react-router-dom';
+import { BrowserRouter, Redirect, Route, useHistory, withRouter } from 'react-router-dom';
 import {
   IonApp,
   IonButton,
@@ -10,7 +10,6 @@ import {
   IonModal,
   IonPage,
   IonRouterOutlet,
-  IonSearchbar,
   IonTabBar,
   IonTabButton,
   IonTabs,
@@ -19,7 +18,7 @@ import {
   setupIonicReact
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { search, personOutline } from 'ionicons/icons';
+import { search, personOutline, peopleOutline } from 'ionicons/icons';
 import Tab1 from './pages/Tab1';
 import UserPage from './pages/Tab2';
 
@@ -50,6 +49,7 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { useRef, useState } from 'react';
 import { OverlayEventDetail } from '@ionic/react/dist/types/components/react-component-lib/interfaces';
 import QuestionPostPage from './components/QuestionPostPage';
+import UserSearchPage from './pages/UserSearchPage';
 
 setupIonicReact();
 
@@ -62,9 +62,10 @@ const auth = firebase.auth();
 
 const App: React.FC = () => {
   const [user] = useAuthState(auth);
+  
   return (
     <section>
-      {user ? <MainPage /> : <SignIn />}
+      {user ? <BrowserRouter> <MainPage /> </BrowserRouter> : <SignIn />}
     </section>
   );
 }
@@ -85,23 +86,12 @@ function MainPage() {
   const [selectedTab, setSelectedTab] = useState("tab1");
   const modal = useRef<HTMLIonModalElement>(null);
   const { email } = auth.currentUser;
+  const history = useHistory();
 
   function onWillDismiss(ev: CustomEvent<OverlayEventDetail>) {
     if (ev.detail.role === 'confirm') {
     }
   }
-  
-  const handleInput = (ev: Event) => {
-    let query = '';
-    const target = ev.target as HTMLIonSearchbarElement;
-    if (target) query = target.value!.toLowerCase();
-    console.log("User queried user:" , query);
-    if (query == '') {
-      //redirect to selected tab
-    } else {
-      //redirect to UserSearchPage.
-    }
-  };
 
   return (
     <IonApp>
@@ -110,7 +100,6 @@ function MainPage() {
           <IonHeader>
             <IonToolbar>
               <IonButton size="small" fill="outline" slot="start" onClick={() => auth.signOut()}>Sign Out</IonButton>
-               <IonSearchbar debounce={1000} onIonInput={(ev: Event) => {handleInput(ev)}}></IonSearchbar>
               <IonButton size="small" fill="outline" slot="end"  id="open-modal" expand="block">Post</IonButton>
             </IonToolbar>
           </IonHeader>
@@ -137,6 +126,12 @@ function MainPage() {
               <Route exact path="/tab2">
                 <UserPage email={email} />
               </Route>
+              <Route exact path="/userSearchPage">
+                <UserSearchPage/>
+              </Route>
+              <Route exact path="/user">
+                <UserPage email={email} />
+              </Route>
               <Route exact path="/">
                 <Redirect to="/tab1" />
               </Route>
@@ -150,6 +145,10 @@ function MainPage() {
               <IonTabButton tab="tab2" href="/tab2">
                 <IonIcon aria-hidden="true" icon={personOutline} />
                 <IonLabel>User</IonLabel>
+              </IonTabButton>
+              <IonTabButton tab="tab3" href="/userSearchPage">
+                <IonIcon aria-hidden="true" icon={peopleOutline} />
+                <IonLabel>Search</IonLabel>
               </IonTabButton>
             </IonTabBar>
           </IonTabs>
