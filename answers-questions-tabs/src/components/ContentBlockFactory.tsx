@@ -1,18 +1,10 @@
 //in the contentBlock parameter has reference and by firestore use reference to get data. if the type is question only post question if it is answer with user's answer and question
 import { IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonContent, IonLoading, IonSpinner } from "@ionic/react";
 
-import firebase from "firebase/compat/app";
-import "firebase/compat/firestore";
-import "firebase/compat/auth";
+import {firestore} from "../App"
 import { useEffect, useState } from "react";
 import { Content } from "../TableTypes";
 import './ExploreContainer.css';
-
-firebase.initializeApp({
-    //private
-  });
-  
-  const firestore = firebase.firestore();
 
 interface ContentBlockPageProps {
     lastVisible: any;
@@ -37,11 +29,7 @@ const ContentBlockPage: React.FC<ContentBlockPageProps> = ({lastVisible, email})
         snap.docs.forEach((doc) => newItems.push({id: doc.id, ...doc.data()}));
         return newItems
       })
-    .then((contents) => {
-        console.log(contents)
-        setContents(contents)
-    }
-    );
+    .then((contents) => {setContents(contents)});
     }, [])
 
     return (

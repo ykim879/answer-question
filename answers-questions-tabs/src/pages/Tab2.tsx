@@ -1,17 +1,10 @@
 import { IonBadge, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonContent, IonHeader, IonItem, IonLabel, IonList, IonPage, IonTitle, IonToolbar } from '@ionic/react';
 import './Tab2.css';
 
-import firebase from "firebase/compat/app";
-import "firebase/compat/firestore";
+import {firestore} from '../App';
 import { useEffect, useState } from 'react';
 import { Users } from '../TableTypes';
 import ContentBlockPage from '../components/ContentBlockFactory';
-
-firebase.initializeApp({
-  //private
-});
-
-const firestore = firebase.firestore();
 
 interface ContainerProps {
   email: string;
@@ -39,7 +32,6 @@ const UserProfile: React.FC<ContainerProps> = ({ email }) => {
         return {...snap.data()};
       })
       .then((user) => {
-        console.log(user);
         if(user) {
           setUserProfile(user);
         }

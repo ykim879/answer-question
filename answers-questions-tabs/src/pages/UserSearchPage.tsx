@@ -1,17 +1,9 @@
 import { IonContent, IonItem, IonList, IonSearchbar } from "@ionic/react";
-import firebase from "firebase/compat/app";
-import "firebase/compat/firestore";
+import {firestore} from '../App'
+import firebase from 'firebase/compat/app';
 import { useState } from "react";
 import UserPage from "./Tab2";
 import "./Tab3.css";
-
-
-firebase.initializeApp({
-  //private
-});
-
-const firestore = firebase.firestore();
-
 
 const UserSearchPage = () => {
   const [result, setResult] = useState<string[]>([]);

@@ -1,13 +1,8 @@
 import { IonButton, IonTextarea } from "@ionic/react";
 import firebase from "firebase/compat/app";
-import "firebase/compat/firestore";
+import {firestore} from "../App";
 import {useState } from 'react';
 
-firebase.initializeApp({
-  //private
-});
-
-const firestore = firebase.firestore();
 
 interface QuestionProps {
   email: string;
