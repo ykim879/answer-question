@@ -1,4 +1,4 @@
-import { IonContent, IonItem, IonList, IonSearchbar } from "@ionic/react";
+import { IonButton, IonContent, IonItem, IonList, IonNavLink, IonSearchbar } from "@ionic/react";
 import {firestore} from '../App'
 import firebase from 'firebase/compat/app';
 import { useState } from "react";
@@ -30,11 +30,13 @@ const UserSearchPage = () => {
 
   return (
     <IonContent>
-      <IonSearchbar className="search" animated={true} debounce={500} onIonInput={(ev: Event) => { handleInput(ev) }}></IonSearchbar>
+      <IonSearchbar className="search" animated={true} debounce={200} onIonInput={(ev: Event) => { handleInput(ev) }}></IonSearchbar>
       <IonList className="searchList">
         {result.map(content => {
           let href = "/tab2";
-          return <IonItem href={href} button>{content}</IonItem>
+          return <IonNavLink routerDirection="forward" component={() => <UserNotAvailablePage/>}>
+            <IonItem button>{content}</IonItem>
+          </IonNavLink>
         })}
       </IonList>
     </IonContent>
