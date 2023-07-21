@@ -1,3 +1,9 @@
+.backButton {
+    position: absolute;
+    top: 4%;
+    width: 92%;
+    max-height: 5%;
+}
 .profile {
     position: absolute;
     top: 10%;

@@ -1,5 +1,5 @@
 import { IonButton, IonContent, IonItem, IonList, IonNavLink, IonSearchbar } from "@ionic/react";
-import {firestore} from '../App'
+import {firestore} from '../main'
 import firebase from 'firebase/compat/app';
 import { useState } from "react";
 import UserPage from "./Tab2";
@@ -34,7 +34,7 @@ const UserSearchPage = () => {
       <IonList className="searchList">
         {result.map(content => {
           let href = "/tab2";
-          return <IonNavLink routerDirection="forward" component={() => <UserNotAvailablePage/>}>
+          return <IonNavLink routerDirection="forward" component={() => <UserPage email={content} backButton = {true}/>}>
             <IonItem button>{content}</IonItem>
           </IonNavLink>
         })}

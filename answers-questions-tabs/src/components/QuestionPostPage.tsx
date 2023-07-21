@@ -1,6 +1,6 @@
 import { IonButton, IonTextarea } from "@ionic/react";
 import firebase from "firebase/compat/app";
-import {firestore} from "../App";
+import {firestore} from "../main";
 import {useState } from 'react';
 
 

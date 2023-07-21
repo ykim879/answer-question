@@ -1,7 +1,7 @@
 //in the contentBlock parameter has reference and by firestore use reference to get data. if the type is question only post question if it is answer with user's answer and question
 import { IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonContent, IonLoading, IonSpinner } from "@ionic/react";
 
-import {firestore} from "../App"
+import {firestore} from "../main"
 import { useEffect, useState } from "react";
 import { Content } from "../TableTypes";
 import './ExploreContainer.css';

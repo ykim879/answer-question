@@ -1,4 +1,4 @@
-import { BrowserRouter, Redirect, Route, useHistory, withRouter } from 'react-router-dom';
+import { Redirect, Route, useHistory } from 'react-router-dom';
 import {
   IonApp,
   IonButton,
@@ -8,6 +8,7 @@ import {
   IonIcon,
   IonLabel,
   IonModal,
+  IonNav,
   IonPage,
   IonRouterOutlet,
   IonTabBar,
@@ -45,27 +46,27 @@ import './theme/variables.css';
 /* Firebase variables */
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
+import "firebase/compat/firestore";
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { useRef, useState } from 'react';
 import { OverlayEventDetail } from '@ionic/react/dist/types/components/react-component-lib/interfaces';
 import QuestionPostPage from './components/QuestionPostPage';
 import UserSearchPage from './pages/UserSearchPage';
+import { auth } from './main';
 
 setupIonicReact();
 
 // firebase start
-firebase.initializeApp({
-  //private
-});
 
-const auth = firebase.auth();
+
 
 const App: React.FC = () => {
-  const [user] = useAuthState(auth);
   
+  const [user] = useAuthState(auth);
+
   return (
     <section>
-      {user ? <BrowserRouter> <MainPage /> </BrowserRouter> : <SignIn />}
+      {user ?  <MainPage /> : <SignIn />}
     </section>
   );
 }
@@ -124,13 +125,10 @@ function MainPage() {
                 <Tab1 />
               </Route>
               <Route exact path="/tab2">
-                <UserPage email={email} />
+                <UserPage email={email} backButton= {false} />
               </Route>
               <Route exact path="/userSearchPage">
-                <UserSearchPage/>
-              </Route>
-              <Route exact path="/user">
-                <UserPage email={email} />
+                <IonNav root={() => <UserSearchPage />}></IonNav>;
               </Route>
               <Route exact path="/">
                 <Redirect to="/tab1" />
