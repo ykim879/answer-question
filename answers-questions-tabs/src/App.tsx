@@ -125,7 +125,7 @@ function MainPage() {
                 <Tab1 />
               </Route>
               <Route exact path="/tab2">
-                <UserPage email={email} backButton= {false} />
+                <IonNav root={() =>  <UserPage email={email} backButton= {false} />}></IonNav>;
               </Route>
               <Route exact path="/userSearchPage">
                 <IonNav root={() => <UserSearchPage />}></IonNav>;

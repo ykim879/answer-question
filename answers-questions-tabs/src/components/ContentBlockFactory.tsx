@@ -1,7 +1,7 @@
 //in the contentBlock parameter has reference and by firestore use reference to get data. if the type is question only post question if it is answer with user's answer and question
-import { IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonContent, IonLoading, IonSpinner } from "@ionic/react";
+import { IonButton, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonCardTitle, IonContent, IonLoading, IonNavLink, IonSpinner } from "@ionic/react";
 
-import {firestore} from "../main"
+import { firestore } from "../main"
 import { useEffect, useState } from "react";
 import { Content } from "../TableTypes";
 import './ExploreContainer.css';
@@ -11,30 +11,30 @@ interface ContentBlockPageProps {
     email: string;
 }
 
-const ContentBlockPage: React.FC<ContentBlockPageProps> = ({lastVisible, email}) => {
+const ContentBlockPage: React.FC<ContentBlockPageProps> = ({ lastVisible, email }) => {
 
     const [contents, setContents] = useState<Content[]>();
     useEffect(() => {
 
-    let questionQuery = firestore
-      .collection("contents")
-      .where("postedUserID", "==", email)
-      .orderBy("timestamp", "desc");
-    if (lastVisible) {
-      questionQuery = questionQuery.startAfter(lastVisible);
-    } //Todo: static variable: lastVisible
-    questionQuery.limit(5).get()
-    .then((snap) => {
-        let newItems: any[] = [];
-        snap.docs.forEach((doc) => newItems.push({id: doc.id, ...doc.data()}));
-        return newItems
-      })
-    .then((contents) => {setContents(contents)});
+        let questionQuery = firestore
+            .collection("contents")
+            .where("postedUserID", "==", email)
+            .orderBy("timestamp", "desc");
+        if (lastVisible) {
+            questionQuery = questionQuery.startAfter(lastVisible);
+        } //Todo: static variable: lastVisible
+        questionQuery.limit(5).get()
+            .then((snap) => {
+                let newItems: any[] = [];
+                snap.docs.forEach((doc) => newItems.push({ id: doc.id, ...doc.data() }));
+                return newItems
+            })
+            .then((contents) => { setContents(contents) });
     }, [])
 
     return (
         <div className="contents">
-            {contents? contents.map(content => <ContentBlockFactory content= {content}/>) : <LoadingContentBlocks/>}
+            {contents ? contents.map(content => <ContentBlockFactory content={content} />) : <LoadingContentBlocks />}
         </div>
     )
 
@@ -42,11 +42,11 @@ const ContentBlockPage: React.FC<ContentBlockPageProps> = ({lastVisible, email})
 function LoadingContentBlocks() {
     return (
         <>
-        <LoadingContentBlock/>
-        <LoadingContentBlock/>
-        <LoadingContentBlock/>
-        <LoadingContentBlock/>
-        <LoadingContentBlock/>
+            <LoadingContentBlock />
+            <LoadingContentBlock />
+            <LoadingContentBlock />
+            <LoadingContentBlock />
+            <LoadingContentBlock />
         </>
     )
 }
@@ -54,8 +54,8 @@ function LoadingContentBlock() {
     return (
         <IonCard>
             <IonCardHeader className="center">
-            <IonSpinner name="dots"></IonSpinner>
-          </IonCardHeader>
+                <IonSpinner name="dots"></IonSpinner>
+            </IonCardHeader>
         </IonCard>
     )
 }
@@ -67,8 +67,13 @@ const ContentBlockFactory: React.FC<ContentFactoryProps> = ({ content }) => {
     // from firestore get data
     return (
         <IonCard>
-            <QuestionBlock email={content.postedUserID} type= {content.type} questionTitle={content.questionContent} question={content.questionContent}/>
-            { content.type == "answer" ? <AnswerBlock answer= {content.answer}/> : <IonContent/> }
+            <QuestionBlock email={content.postedUserID} type={content.type} questionTitle={content.questionContent} question={content.questionContent} />
+            <IonCardContent>
+                {content.type == "answer" ? content.answer : <></>}
+                <IonNavLink routerDirection="forward" component={() => <QuestionViewBlock />}>
+                    <IonButton size="small" color="tertiary">View Question</IonButton>
+                </IonNavLink>
+            </IonCardContent>
         </IonCard>
 
     );
@@ -79,29 +84,19 @@ interface QuestionBlockProps {
     questionTitle: string;
     question: string;
 }
-const QuestionBlock: React.FC<QuestionBlockProps> = ({email, type, questionTitle, question}) => {
+const QuestionBlock: React.FC<QuestionBlockProps> = ({ email, type, questionTitle, question }) => {
     return (
         <IonCardHeader>
             <IonCardTitle>{question}</IonCardTitle>
             <IonCardSubtitle>{email} posted {type} ...</IonCardSubtitle>
-          </IonCardHeader>
+        </IonCardHeader>
     )
 }
 
-interface AnswerProps {
-    answer: string;
-}
-
-const AnswerBlock: React.FC<AnswerProps> = ({answer}) => {
+const QuestionViewBlock = () => {
     return (
-        <IonCardContent>
-            {answer}
-        </IonCardContent>
+        <></>
     )
-}
-
-function useCollectionOnce(query: any, options: any): [any, any, any] {
-    throw new Error("Function not implemented.");
 }
 
 export default ContentBlockPage;
