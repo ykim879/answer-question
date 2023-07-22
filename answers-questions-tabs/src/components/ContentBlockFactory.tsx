@@ -5,6 +5,7 @@ import { firestore } from "../main"
 import { useEffect, useState } from "react";
 import { Content } from "../TableTypes";
 import './ExploreContainer.css';
+import QuestionViewPage from "../pages/QuestionViewPage";
 
 interface ContentBlockPageProps {
     lastVisible: any;
@@ -67,10 +68,10 @@ const ContentBlockFactory: React.FC<ContentFactoryProps> = ({ content }) => {
     // from firestore get data
     return (
         <IonCard>
-            <QuestionBlock email={content.postedUserID} type={content.type} questionTitle={content.questionContent} question={content.questionContent} />
+            <QuestionBlock email={content.postedUserID} type={content.type} question={content.questionContent} />
             <IonCardContent>
                 {content.type == "answer" ? content.answer : <></>}
-                <IonNavLink routerDirection="forward" component={() => <QuestionViewBlock />}>
+                <IonNavLink routerDirection="forward" component={() => <QuestionViewPage  email={content.postedUserID} type={content.type} question={content.questionContent} questionRef= {content.id}/>}>
                     <IonButton size="small" color="tertiary">View Question</IonButton>
                 </IonNavLink>
             </IonCardContent>
@@ -81,21 +82,14 @@ const ContentBlockFactory: React.FC<ContentFactoryProps> = ({ content }) => {
 interface QuestionBlockProps {
     email: string;
     type: string;
-    questionTitle: string;
     question: string;
 }
-const QuestionBlock: React.FC<QuestionBlockProps> = ({ email, type, questionTitle, question }) => {
+export const QuestionBlock: React.FC<QuestionBlockProps> = ({ email, type, question }) => {
     return (
         <IonCardHeader>
             <IonCardTitle>{question}</IonCardTitle>
             <IonCardSubtitle>{email} posted {type} ...</IonCardSubtitle>
         </IonCardHeader>
-    )
-}
-
-const QuestionViewBlock = () => {
-    return (
-        <></>
     )
 }
 
