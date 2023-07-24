@@ -10,6 +10,7 @@ export interface Content{
     id: string;
     postedUserID: string;
     questionContent: string;
+    answerContent: string;
     questionTitle: string;
     timestamp: Date;
     type: string;

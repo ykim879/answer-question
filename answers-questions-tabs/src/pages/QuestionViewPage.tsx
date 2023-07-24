@@ -1,9 +1,10 @@
-import { IonBackButton, IonButton, IonButtons, IonCard, IonCardContent, IonContent, IonTextarea, IonToolbar } from '@ionic/react';
+import { IonBackButton, IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonContent, IonTextarea, IonToolbar } from '@ionic/react';
 import './Tab2.css';
-import { QuestionBlock } from '../components/ContentBlockFactory';
-import { useState } from 'react';
+import { LoadingContentBlocks, QuestionBlock } from '../components/ContentBlockFactory';
+import { useEffect, useState } from 'react';
 import firebase from "firebase/compat/app";
 import {firestore} from "../main";
+import { Content } from '../TableTypes';
 
 interface QuestionViewPageProps {
     email: string;
@@ -12,6 +13,7 @@ interface QuestionViewPageProps {
     questionRef: string;
 }
 const QuestionViewPage: React.FC<QuestionViewPageProps> = ({ email, type, question, questionRef }) => {
+    let lastVisible = null;
     return (
         <IonContent>
             <IonCard className="backButton">
@@ -27,9 +29,8 @@ const QuestionViewPage: React.FC<QuestionViewPageProps> = ({ email, type, questi
                 </IonCard>
             <div className='contents'>
                 <AnswerInputCard  email={email} question={question} questionRef={questionRef}/>
-                {/*<AnswerBlocks lastVisible={lastVisible} email={email} />*/}
+                <AnswerCards lastVisible={lastVisible} questionRef={questionRef} />
             </div>
-
         </IonContent>
     );
 }
@@ -72,4 +73,56 @@ const AnswerInputCard: React.FC<AnswerInputCardProps> = ({email, question, quest
     );
 }
 
+interface AnswerCardsProps {
+    lastVisible: any;
+    questionRef: string;
+} 
+
+const AnswerCards:  React.FC<AnswerCardsProps> = ({lastVisible, questionRef}) => {
+    const [contents, setContents] = useState<Content[]>();
+    useEffect(() => {
+
+        let questionQuery = firestore
+            .collection("contents")
+            .where("questionRef", "==", questionRef)
+            .orderBy("timestamp", "desc");
+        if (lastVisible) {
+            questionQuery = questionQuery.startAfter(lastVisible);
+        } //Todo: static variable: lastVisible
+        questionQuery.limit(5).get()
+            .then((snap) => {
+                let newItems: any[] = [];
+                snap.docs.forEach((doc) => newItems.push({ id: doc.id, ...doc.data() }));
+                return newItems
+            })
+            .then((contents) => {
+                setContents(contents) 
+            });
+    }, [])
+
+    return (
+        <div>
+            {contents ? contents.map(content => <AnswerCard email={content.postedUserID} answer = {content.answerContent} />) : <LoadingContentBlocks />}
+        </div>
+    )
+}
+
+interface AnswerCardProps {
+    email: string;
+    answer: string;
+} 
+
+const AnswerCard: React.FC<AnswerCardProps> = ({email, answer}) => {
+    return (
+        <IonCard className='answerCard'>
+            <IonCardHeader>
+                <IonCardSubtitle>{email} answered.. </IonCardSubtitle>
+            </IonCardHeader>
+            <IonCardContent>
+                {answer}
+            </IonCardContent>
+        </IonCard>
+    )
+
+}
 export default QuestionViewPage;

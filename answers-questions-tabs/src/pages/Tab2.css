@@ -18,6 +18,12 @@
     max-height: 25%;
     overflow:scroll;
 }
+.answerCard {
+    width: 92%;
+    min-height: 25%;
+    max-height: 25%;
+    overflow: scroll;
+}
 .contents {
     position: absolute;
     top: 37%;

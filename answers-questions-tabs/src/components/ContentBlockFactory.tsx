@@ -40,7 +40,7 @@ const ContentBlockPage: React.FC<ContentBlockPageProps> = ({ lastVisible, email 
     )
 
 }
-function LoadingContentBlocks() {
+export function LoadingContentBlocks() {
     return (
         <>
             <LoadingContentBlock />
@@ -70,10 +70,11 @@ const ContentBlockFactory: React.FC<ContentFactoryProps> = ({ content }) => {
         <IonCard>
             <QuestionBlock email={content.postedUserID} type={content.type} question={content.questionContent} />
             <IonCardContent>
-                {content.type == "answer" ? content.answer : <></>}
-                <IonNavLink routerDirection="forward" component={() => <QuestionViewPage  email={content.postedUserID} type={content.type} question={content.questionContent} questionRef= {content.id}/>}>
-                    <IonButton size="small" color="tertiary">View Question</IonButton>
-                </IonNavLink>
+                {content.type == "answer" ? content.answerContent :
+                    <IonNavLink routerDirection="forward" component={() => <QuestionViewPage email={content.postedUserID} type={content.type} question={content.questionContent} questionRef={content.id} />}>
+                        <IonButton size="small" color="tertiary">View Question</IonButton>
+                    </IonNavLink>
+                }
             </IonCardContent>
         </IonCard>
 
