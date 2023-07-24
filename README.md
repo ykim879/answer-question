@@ -42,5 +42,13 @@ User create the the post it will delete from question collection with their user
 For original question, it will update answers field by deleting their reference.
 For each followers, it will update to Following questions field by deleting their referece.
 
+### Scenario 7) User views Question thread from Question card
+From the Question card, if user sees the question that is interesting, they can view answers from the thread by clicking on view question buttton.
+If user clicked from the question card that has answered in, then they can view that answer from the front.
+
+### Scenario 8) User can answer Question thread from Question question thread screen
+Right below the Question card, there is inputable input card that user can put there answer in and post it. Then it will save the content with type answer on backends and save reference on answers as well.
+
+
 ## Class Diagram
 ![Class Diagram (1)](https://github.com/ykim879/answer-question/assets/59812671/5811b042-24ec-4077-b932-2451d76ce396)
