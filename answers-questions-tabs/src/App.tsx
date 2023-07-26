@@ -53,6 +53,7 @@ import { OverlayEventDetail } from '@ionic/react/dist/types/components/react-com
 import QuestionPostPage from './components/QuestionPostPage';
 import UserSearchPage from './pages/UserSearchPage';
 import { auth } from './main';
+import CreateGroupModal from './components/CreateGroupModal';
 
 setupIonicReact();
 
@@ -86,6 +87,8 @@ function SignIn() {
 function MainPage() {
   const [selectedTab, setSelectedTab] = useState("tab1");
   const modal = useRef<HTMLIonModalElement>(null);
+  const createGroupModal = useRef<HTMLIonModalElement>(null);
+
   const { email } = auth.currentUser;
   const history = useHistory();
 
@@ -101,7 +104,10 @@ function MainPage() {
           <IonHeader>
             <IonToolbar>
               <IonButton size="small" fill="outline" slot="start" onClick={() => auth.signOut()}>Sign Out</IonButton>
-              <IonButton size="small" fill="outline" slot="end"  id="open-modal" expand="block">Post</IonButton>
+              <IonButtons  slot="end">
+              <IonButton size="small" fill="solid" id="open-create-group-modal" expand="block">Create Group</IonButton>
+              <IonButton size="small" fill="outline" id="open-modal" expand="block">Post</IonButton>
+              </IonButtons>
             </IonToolbar>
           </IonHeader>
 
@@ -118,6 +124,22 @@ function MainPage() {
             <QuestionPostPage email = {email} modal = {modal}/>
           </IonContent>
         </IonModal>
+
+        <IonModal ref={createGroupModal} trigger="open-create-group-modal">
+          <IonHeader>
+            <IonToolbar>
+              <IonButtons slot="start">
+                <IonButton onClick={() => createGroupModal.current?.dismiss()}>Cancel</IonButton>
+              </IonButtons>
+              <IonTitle>Create Group</IonTitle>
+            </IonToolbar>
+          </IonHeader>
+          <IonContent className="ion-padding">
+            <CreateGroupModal  modal = {createGroupModal}/>
+          </IonContent>
+        </IonModal>
+
+
 
           <IonTabs onIonTabsWillChange={e => setSelectedTab(e.detail.tab)}>
             <IonRouterOutlet>
