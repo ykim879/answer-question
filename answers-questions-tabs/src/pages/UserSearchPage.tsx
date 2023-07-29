@@ -1,17 +1,24 @@
 import { IonButton, IonContent, IonItem, IonList, IonNavLink, IonSearchbar } from "@ionic/react";
 import {firestore} from '../main'
 import firebase from 'firebase/compat/app';
-import { useState } from "react";
+import React, { useState } from "react";
 import UserPage from "./Tab2";
 import "./Tab3.css";
+import GroupPage from "./GroupPage";
+
+interface SearchItemProps {
+  id: string;
+  type: string;
+}
 
 const UserSearchPage = () => {
-  const [result, setResult] = useState<string[]>([]);
+  const [result, setResult] = useState<SearchItemProps[]>([]);
   const handleInput = (ev: Event) => {
     let query = '';
     const target = ev.target as HTMLIonSearchbarElement;
-    if (target) query = target.value!.toLowerCase();
+    if (target) query = target.value;
     if (query) {
+      console.log(query)
       firestore
         .collection("users")
         .where(firebase.firestore.FieldPath.documentId(), ">=", query)
@@ -19,7 +26,7 @@ const UserSearchPage = () => {
         .get()
         .then((snap) => {
           let newItems: any[] = [];
-          snap.docs.forEach((doc) => newItems.push(doc.id));
+          snap.docs.forEach((doc) => newItems.push({ id : doc.id, type: doc.data().type}));
           return newItems
         })
         .then((users) => { setResult(users) });
@@ -33,9 +40,8 @@ const UserSearchPage = () => {
       <IonSearchbar className="search" animated={true} debounce={200} onIonInput={(ev: Event) => { handleInput(ev) }}></IonSearchbar>
       <IonList className="searchList">
         {result.map(content => {
-          let href = "/tab2";
-          return <IonNavLink routerDirection="forward" component={() => <UserPage email={content} backButton = {true}/>}>
-            <IonItem button>{content}</IonItem>
+          return <IonNavLink routerDirection="forward" component={() => <SearchItem id={content.id} type = {content.type}/>}>
+            <IonItem button>{content.id}</IonItem>
           </IonNavLink>
         })}
       </IonList>
@@ -43,11 +49,11 @@ const UserSearchPage = () => {
   )
 }
 
-const UserNotAvailablePage = () => {
+const SearchItem: React.FC<SearchItemProps> = ({id, type}) => {
   return (
-    <IonContent>
-      User is Not Available
-    </IonContent>
+    <>
+    {type === "group" ? <GroupPage id = {id}/> : <UserPage email={id} backButton = {true}/> }
+    </>
   )
 }
 

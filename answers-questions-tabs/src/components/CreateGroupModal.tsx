@@ -17,6 +17,7 @@ const CreateGroupModal: React.FC<CreateGroupModalProps> = ({ modal }) => {
                 type: "group",
                 groupDescrp: groupDescrp,
                 groupName: groupName,
+                groupMemberCount: 0,
                 timestamp: firebase.firestore.FieldValue.serverTimestamp()
             }
         );
