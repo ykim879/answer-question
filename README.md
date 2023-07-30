@@ -21,11 +21,10 @@ When the user click on user's it goes to user's profile (or click on their profi
 2. user's answersform and questions which are ordered by created date. It will be displayed switching from question to 2 answerforms until one run out. The diplaying will be done by pagination to consider when the data gets big. 
 
 ### Scenario 2) Any users wants to view their discovery page
-When the user open the app it will go to discovery page by default or else if they click on discovery tab on the tab it will direct to discovery page. The users will view both questions and answers form that the followers has posted. it will switching from questions -> 2 answersform -> questions -> ... until one of them are depleted. The operation will include pagination
+When the user opens the app it will go to the discovery page by default or else if they click on the discovery tab on the tab it will direct to the discovery page. The users will view both questions and answers that the group that they are involved in. On the backend, the query will retrieve data if the user is included in the readers which is an array field.
 
 ### Scenario 3) User creates the question post
-User create the the post it will be stored in question collection with their userid (also documentId), questionId (uniquely putted), empty answers array, content, and timestamp.
-For each followers, it will update to Following questions field by appending given question.
+Users create the post it will be stored in the question collection with their user-id (also documentId), questionId (unique), empty answers array, content, and timestamp. Users chose the group that they want to post the question to. The collection will store the members of the group in the firebase so that each user can retrieve content faster.
 
 ### Scenario 4) User deletes the question post
 User create the the post it will delete from question collection with their userid (also documentId)and questionId (uniquely putted). Traverse Answes and delete the reference but the answer still exists. However the users cannot view the question it will pop the question is no longer existed because user has deleted the question.
