@@ -144,7 +144,7 @@ function MainPage() {
           <IonTabs onIonTabsWillChange={e => setSelectedTab(e.detail.tab)}>
             <IonRouterOutlet>
               <Route exact path="/tab1">
-                <Tab1 />
+                <IonNav root={() =>  <Tab1 />}></IonNav>;
               </Route>
               <Route exact path="/tab2">
                 <IonNav root={() =>  <UserPage email={email} backButton= {false} />}></IonNav>;

@@ -10,17 +10,25 @@ import QuestionViewPage from "../pages/QuestionViewPage";
 interface ContentBlockPageProps {
     lastVisible: any;
     email: string;
+    page: "userPage" | "discoveryPage"
 }
 
-const ContentBlockPage: React.FC<ContentBlockPageProps> = ({ lastVisible, email }) => {
+const ContentBlockPage: React.FC<ContentBlockPageProps> = ({ lastVisible, email, page }) => {
 
     const [contents, setContents] = useState<Content[]>();
+    
+
     useEffect(() => {
 
-        let questionQuery = firestore
-            .collection("contents")
-            .where("postedUserID", "==", email)
-            .orderBy("timestamp", "desc");
+        let questionQuery = page === "userPage" ? firestore
+        .collection("contents")
+        .where("postedUserID", "==", email)
+        .orderBy("timestamp", "desc")
+        : firestore
+        .collection("contents")
+        .where('readers', 'array-contains', email)
+        .orderBy("timestamp", "desc");
+
         if (lastVisible) {
             questionQuery = questionQuery.startAfter(lastVisible);
         } //Todo: static variable: lastVisible
@@ -34,12 +42,13 @@ const ContentBlockPage: React.FC<ContentBlockPageProps> = ({ lastVisible, email 
     }, [])
 
     return (
-        <div className="contents">
+        <div className={page}>
             {contents ? contents.map(content => <ContentBlockFactory content={content} />) : <LoadingContentBlocks />}
         </div>
     )
 
 }
+
 export function LoadingContentBlocks() {
     return (
         <>

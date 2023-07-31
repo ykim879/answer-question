@@ -9,16 +9,7 @@ interface CreateGroupModalProps {
 const CreateGroupModal: React.FC<CreateGroupModalProps> = ({ modal }) => {
     const [groupName, setGroupName] = useState('');
     const [groupDescrp, setGroupDescrp] = useState('');
-    const [groupList, setGroupList] = useState([]);
-    const [selectedGroup, setGroup] = useState('');
-    const accordionGroup = useRef<null | HTMLIonAccordionGroupElement>(null);
-    useEffect(
-        () => {
-            const { email } = auth?.currentUser;
-            if (email) {
-                firestore.collection('users').doc(email).get().then(snap => setGroupList(snap.data()?.followings))
-            }
-        }, [])
+    
 
     const sendMessage = async (e) => {
         e.preventDefault();
@@ -38,13 +29,6 @@ const CreateGroupModal: React.FC<CreateGroupModalProps> = ({ modal }) => {
         modal.current?.dismiss()
     }
 
-    const selectGroup = (group : string) => {
-        setGroup(group);
-        if (accordionGroup.current) {
-            accordionGroup.current.value = undefined;
-        }
-    }
-
     return (
         <>
             <form onSubmit={sendMessage}>
@@ -54,19 +38,7 @@ const CreateGroupModal: React.FC<CreateGroupModalProps> = ({ modal }) => {
                 <IonTextarea label="Write the description about your group" placeholder="Explain the group you want to create"
                     value={groupDescrp} onIonInput={(e) => setGroupDescrp((e.target as HTMLTextAreaElement).value)} labelPlacement="floating"
                     counter={true} maxlength={250} autoGrow={true} />
-                <IonAccordionGroup expand="inset"  ref={accordionGroup}>
-                    <IonAccordion value="first">
-                        <IonItem slot="header" color="light">
-                            <IonLabel>{selectedGroup ? selectedGroup : "Select the group"}</IonLabel>
-                        </IonItem>
-                        { groupList ? 
-                        <div className="ion-padding" slot="content">
-                            {groupList.map(group => <IonItem button onClick={() => selectGroup(group)}>{group}</IonItem>)}
-                        </div>
-                        : <IonSpinner name="dots"></IonSpinner>
-                        }
-                    </IonAccordion>
-                </IonAccordionGroup>
+                
                 <IonButton slot="bottom" type="submit"> Create </IonButton>
             </form>
         </>
