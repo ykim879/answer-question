@@ -34,9 +34,9 @@ const QuestionPostPage: React.FC<QuestionProps> = ({ email, modal }) => {
         {
           postedUserID: email,
           type: "question",
-          questionTitle: questionValue,
           questionContent: formValue,
           readers: snap.data()?.groupMembers,
+          group: selectedGroup,
           timestamp: firebase.firestore.FieldValue.serverTimestamp()
         })
     ).then(() => {
@@ -55,7 +55,6 @@ const QuestionPostPage: React.FC<QuestionProps> = ({ email, modal }) => {
   return (
     <>
       <form onSubmit={sendMessage}>
-        <IonTextarea label="Place your question title" placeholder="Enter your title of the question" value={questionValue} onIonInput={(e) => setQuestionValue((e.target as HTMLTextAreaElement).value)} labelPlacement="floating" counter={true} maxlength={50} />
         <IonTextarea label="Place your question" placeholder="Enter your question" value={formValue} onIonInput={(e) => setFormValue((e.target as HTMLTextAreaElement).value)} labelPlacement="floating" counter={true} maxlength={250} autoGrow={true} />
         <IonAccordionGroup expand="inset" ref={accordionGroup}>
           <IonAccordion value="first">

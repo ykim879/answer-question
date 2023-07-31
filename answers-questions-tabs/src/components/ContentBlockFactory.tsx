@@ -10,7 +10,7 @@ import QuestionViewPage from "../pages/QuestionViewPage";
 interface ContentBlockPageProps {
     lastVisible: any;
     email: string;
-    page: "userPage" | "discoveryPage"
+    page: "userPage" | "discoveryPage" | "groupPage"
 }
 
 const ContentBlockPage: React.FC<ContentBlockPageProps> = ({ lastVisible, email, page }) => {
@@ -24,9 +24,13 @@ const ContentBlockPage: React.FC<ContentBlockPageProps> = ({ lastVisible, email,
         .collection("contents")
         .where("postedUserID", "==", email)
         .orderBy("timestamp", "desc")
-        : firestore
+        : page == "discoveryPage" ? firestore
         .collection("contents")
         .where('readers', 'array-contains', email)
+        .orderBy("timestamp", "desc") 
+        : firestore
+        .collection("contents")
+        .where('group', '==', email)
         .orderBy("timestamp", "desc");
 
         if (lastVisible) {
@@ -74,11 +78,11 @@ interface ContentFactoryProps {
     content: Content;
 }
 const ContentBlockFactory: React.FC<ContentFactoryProps> = ({ content }) => {
-    // from firestore get data
+    const color = content.type == "answer" ? "medium" : "light";
     return (
-        <IonCard>
+        <IonCard color = {color}>
             <QuestionBlock email={content.postedUserID} type={content.type} question={content.questionContent} />
-            <IonCardContent>
+            <IonCardContent >
                 {content.type == "answer" ? content.answerContent :
                     <IonNavLink routerDirection="forward" component={() => <QuestionViewPage email={content.postedUserID} type={content.type} question={content.questionContent} questionRef={content.id} />}>
                         <IonButton size="small" color="tertiary">View Question</IonButton>
