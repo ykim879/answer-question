@@ -1,6 +1,6 @@
 import { IonAccordion, IonAccordionGroup, IonButton, IonItem, IonLabel, IonLoading, IonSpinner, IonTextarea } from "@ionic/react";
 import firebase from "firebase/compat/app";
-import { auth, firestore } from "../main";
+import { firestore } from "../main";
 import { useEffect, useRef, useState } from 'react';
 
 

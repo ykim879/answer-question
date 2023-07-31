@@ -26,7 +26,7 @@ const UserPage: React.FC<ContainerProps> = ({ email, backButton }) => {
         </IonToolbar>
       </IonCard> : <></>}
       <UserProfile email={email} />
-      <ContentBlockPage lastVisible={lastVisible} email={email} />
+      <ContentBlockPage lastVisible={lastVisible} email={email} page ="userPage" />
     </IonContent>
   );
 };
