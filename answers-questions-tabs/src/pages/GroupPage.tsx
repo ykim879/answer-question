@@ -17,11 +17,10 @@ const GroupPage: React.FC<GroupPageProps> = ({ id }) => {
     const [disableButton, setDisableButton] = useState<boolean>(false);
     const { email } = auth?.currentUser;
     useEffect(() => {
-        updateUser();
-        setIsMember(group && group.groupMembers.includes(email));
+        updateUser()
     }, []);
 
-    const updateUser = () => {
+    const updateUser = async () => {
         firestore
             .collection("users")
             .doc(id)
@@ -29,9 +28,11 @@ const GroupPage: React.FC<GroupPageProps> = ({ id }) => {
             .then((snap) => {
                 return { ...snap.data() };
             })
-            .then((user: any | Users) => {
-                if (user) {
-                    setGroup(user);
+            .then((fetchedGroup: any | Users) => {
+                if (fetchedGroup) {
+                    console.log(fetchedGroup);
+                    setGroup(fetchedGroup);
+                    setIsMember(fetchedGroup.groupMembers.includes(email))
                 }
             })
     }
@@ -49,7 +50,6 @@ const GroupPage: React.FC<GroupPageProps> = ({ id }) => {
                     followings: firebase.firestore.FieldValue.arrayUnion(id),
                     followingsCount: firebase.firestore.FieldValue.increment(1)
                 })).then(() => {
-                    setIsMember(true);
                     updateUser();
                     setJoinedToast(true);
                     setDisableButton(false);
@@ -69,7 +69,6 @@ const GroupPage: React.FC<GroupPageProps> = ({ id }) => {
                     followings: firebase.firestore.FieldValue.arrayRemove(id),
                     followingsCount: firebase.firestore.FieldValue.increment(-1)
                 })).then(() => {
-                    setIsMember(false);
                     updateUser();
                     setLeaveToast(true);
                     setDisableButton(false);
