@@ -1,9 +1,9 @@
-import { IonBackButton, IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonContent, IonTextarea, IonToolbar } from '@ionic/react';
+import { IonBackButton, IonButton, IonButtons, IonCard, IonCardContent, IonCardHeader, IonCardSubtitle, IonContent, IonText, IonTextarea, IonToolbar } from '@ionic/react';
 import './Tab2.css';
 import { LoadingContentBlocks, QuestionBlock } from '../components/ContentBlockFactory';
 import { useEffect, useState } from 'react';
 import firebase from "firebase/compat/app";
-import {firestore} from "../main";
+import { firestore } from "../main";
 import { Content } from '../TableTypes';
 
 interface QuestionViewPageProps {
@@ -24,11 +24,11 @@ const QuestionViewPage: React.FC<QuestionViewPageProps> = ({ email, type, questi
                 </IonToolbar>
             </IonCard>
 
-                <IonCard className="questionTopCard">
-                    <QuestionBlock email={email} type={type} question={question} />
-                </IonCard>
+            <IonCard className="questionTopCard">
+                <QuestionBlock email={email} type={type} question={question} />
+            </IonCard>
             <div className='contents'>
-                <AnswerInputCard  email={email} question={question} questionRef={questionRef}/>
+                <AnswerInputCard email={email} question={question} questionRef={questionRef} />
                 <AnswerCards lastVisible={lastVisible} questionRef={questionRef} />
             </div>
         </IonContent>
@@ -39,46 +39,76 @@ interface AnswerInputCardProps {
     email: string;
     question: string;
     questionRef: string;
-} 
+}
 
-const AnswerInputCard: React.FC<AnswerInputCardProps> = ({email, question, questionRef}) => {
+const AnswerInputCard: React.FC<AnswerInputCardProps> = ({ email, question, questionRef }) => {
     const [answer, setAnswer] = useState('');
-    const submit = async(e) => {
+    const [isUserAnswered, setIsUserAnswered] = useState<boolean | null>(null);
+
+    useEffect(() => {
+        firestore.collection('contents')
+            .where("questionRef", "==", questionRef)
+            .where("postedUserID", "==", email)
+            .limit(1)
+            .get()
+            .then(
+                snap => {
+                    if (snap.empty) {
+                        setIsUserAnswered(false);
+                    } else {
+                        setAnswer(snap.docs.at(0)?.data().answerContent)
+                        setIsUserAnswered(true);
+                    }
+                }
+            )
+    }
+    )
+    const submit = async (e) => {
         firestore.collection('contents').add(
             {
-              postedUserID: email,
-              type: "answer",
-              questionContent: question,
-              questionRef: questionRef,
-              answerContent: answer,
-              timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                postedUserID: email,
+                type: "answer",
+                questionContent: question,
+                questionRef: questionRef,
+                answerContent: answer,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
             });
-        setAnswer('');
+        setIsUserAnswered(true);
     }
     return (
-        <IonCard>
-            <IonCardContent>
-                <IonTextarea
-                    label="Respond with your answer.."
-                    labelPlacement="floating"
-                    fill="outline"
-                    placeholder="Enter text"
-                    counter={true} maxlength={250}
-                    autoGrow={true}
-                    value = {answer}
-                    onIonInput={(e) => setAnswer((e.target as HTMLTextAreaElement).value)}/>
-                <IonButton size="small" onClick={submit}>Submit</IonButton>
-            </IonCardContent>
-        </IonCard>
+        <>
+            {isUserAnswered == null ? <LoadingContentBlocks /> :
+                <IonCard>
+                    <IonCardContent>
+                        {isUserAnswered ?
+                        <IonText>{answer}</IonText>
+                        :
+                        <>
+                            <IonTextarea
+                                label="Respond with your answer.."
+                                labelPlacement="floating"
+                                fill="outline"
+                                placeholder="Enter text"
+                                counter={true} maxlength={250}
+                                autoGrow={true}
+                                value={answer}
+                                onIonInput={(e) => setAnswer((e.target as HTMLTextAreaElement).value)} />
+                            <IonButton size="small" onClick={submit}>Submit</IonButton>
+                        </>
+                        }
+                    </IonCardContent>
+                </IonCard>
+            }
+        </>
     );
 }
 
 interface AnswerCardsProps {
     lastVisible: any;
     questionRef: string;
-} 
+}
 
-const AnswerCards:  React.FC<AnswerCardsProps> = ({lastVisible, questionRef}) => {
+const AnswerCards: React.FC<AnswerCardsProps> = ({ lastVisible, questionRef }) => {
     const [contents, setContents] = useState<Content[]>();
     useEffect(() => {
 
@@ -96,13 +126,13 @@ const AnswerCards:  React.FC<AnswerCardsProps> = ({lastVisible, questionRef}) =>
                 return newItems
             })
             .then((contents) => {
-                setContents(contents) 
+                setContents(contents)
             });
     }, [])
 
     return (
         <div>
-            {contents ? contents.map(content => <AnswerCard email={content.postedUserID} answer = {content.answerContent} />) : <LoadingContentBlocks />}
+            {contents ? contents.map(content => <AnswerCard email={content.postedUserID} answer={content.answerContent} />) : <LoadingContentBlocks />}
         </div>
     )
 }
@@ -110,9 +140,9 @@ const AnswerCards:  React.FC<AnswerCardsProps> = ({lastVisible, questionRef}) =>
 interface AnswerCardProps {
     email: string;
     answer: string;
-} 
+}
 
-const AnswerCard: React.FC<AnswerCardProps> = ({email, answer}) => {
+const AnswerCard: React.FC<AnswerCardProps> = ({ email, answer }) => {
     return (
         <IonCard className='answerCard'>
             <IonCardHeader>

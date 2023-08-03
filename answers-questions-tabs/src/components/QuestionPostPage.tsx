@@ -11,7 +11,6 @@ interface QuestionProps {
 
 const QuestionPostPage: React.FC<QuestionProps> = ({ email, modal }) => {
   const [formValue, setFormValue] = useState('');
-  const [questionValue, setQuestionValue] = useState('');
 
   const [groupList, setGroupList] = useState([]);
   const [selectedGroup, setGroup] = useState('');
@@ -71,7 +70,7 @@ const QuestionPostPage: React.FC<QuestionProps> = ({ email, modal }) => {
         </IonAccordionGroup>
 
         <IonButton slot="bottom" type="submit"
-        disabled= {questionValue.length < 10 || formValue.length < 10 || selectedGroup.length == 0}> Submit </IonButton>
+        disabled= {formValue.length < 10 || selectedGroup.length == 0}> Submit </IonButton>
         
         <IonLoading isOpen={loading} message="Posting your question" duration={3000} />
 
