@@ -39,24 +39,20 @@ When the user click on user's it goes to user's profile (or click on their profi
 When the user opens the app, it will go to the discovery page by default. They also can navigate to the page if they click on the discovery icon on the tab. The users will view both questions and answers that the group that they joined on the page. 
 
 ### Scenario 3) Users can post the question to the group
-Users create the post it will be stored in the question collection with their user-id (also documentId), questionId (unique), empty answers array, content, and timestamp. Users chose the group that they want to post the question to. The collection will store the members of the group in the firebase so that each user can retrieve content faster.
+Users create the post, ask question, and chose the group they want to post the question to. The question will be displayed on the user's page that posted a question and discoveery page to any user who followed the group.
 
-### Scenario 4) Users can search any user on the paltform on Search Page
-When User goees to search page and type on email of the user that they want to search for, they can navigate to that user's page on the dropdown. 
+### Scenario 4) Users can search any user on the platform on Search Page
+When User goes to search page and type on email of the user that they want to search for, they can navigate to that user's page on the dropdown. 
 If they want to navigate to previous page, they can do so by using the back button on top of the page.
 
-### Scenario 5) User creates the questionForm post
-User create the the post it will be stored in questionForm collection with their userid (also documentId), questionLink (reference the question), their answerId, original question(at that time) content, content, and timestamp.
-It will update its question post by appending their questionForm in answer field.
-For each followers, it will update to Following questionForm field by appending given questionFirn post by using reference.
+### Scenario 5) Users can create the group 
+Users can create the group that they desired to. The group that they created can be joined by any users on the platform.
 
-### Scenario 6) User deletes the questionForm post
-User create the the post it will delete from question collection with their userid (also documentId)and questionId (uniquely putted).
-For original question, it will update answers field by deleting their reference.
-For each followers, it will update to Following questions field by deleting their referece.
+### Scenario 6) Users can search any group on the platform on Search Page
+Users can search the group and navigate to the group page. If the group they searched is the group they joined, they can view the content and leave the group if they desire. If they haven't joined the group, they can leave the group whenever they want.
 
-### Scenario 7) User views Question thread from Question card
-From the Question card, if user sees the question that is interesting, they can view answers from the thread by clicking on view question buttton.
+### Scenario 7) Users can view Question thread from Question card
+From the Question card, if user sees the question that is interesting, they can view answers from the thread by clicking on view question button.
 If user clicked from the question card that has answered in, then they can view that answer from the front.
 
 ### Scenario 8) User can answer Question thread from Question question thread screen
