@@ -59,6 +59,35 @@ If user clicked from the question card that has answered in, then they can view 
 Right below the Question card, there is inputable input card that user can put there answer in and post it. Then it will save the content with type answer on backends and save reference on answers as well.
 
 
+## Data Model
+### Users
+"Users" represent both group and user in the platform. Two different types of users will be stored in same collection to make search operation possible for O(1) time complexity in firebase.
+- users (type 1: when it is user)
+  - userEmail : String (field id)
+    - followings : Array <String>
+    - followingCount : Number
+    - userName : String
+- users (type 2: when it is group)
+  - groupUniqueName: String (field id)
+    - groupDesrp: String
+    - groupMemberCount: Number
+    - groupMembers: Array <String>
+    - groupName: String
+    - timeStamp: Date
+### Contents
+"Contents" represent both question and answers on the platform. Two different types of contents will be stored in same collection to make discovery page and user page can fetch relevant contents for only O(1) time complexity in firebase.
+- contents (type 1: when it is a question)
+  - contentId: UUID (field id)
+    - group: String
+    - postedUserId: Array<String>
+    - questionContent: String
+    - readers: Array<String>
+    - timeStamp: Date
+- contents (type 2: when it is an answer)
+  - contentId: UUID (field id)
+    - questionRef: UUID
+    - postedUserId: Array<String>
+    - answerContent: String
+    - timeStamp: Date
+    
 
-## Class Diagram
-![Class Diagram (1)](https://github.com/ykim879/answer-question/assets/59812671/5811b042-24ec-4077-b932-2451d76ce396)
